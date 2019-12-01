@@ -3,7 +3,8 @@ package observer
 import "testing"
 
 func TestObserver(t *testing.T) {
-	var loba observable
+	// simple test
+	var loba = observable{name: "didadi"}
 	loba.Add(&observer{"first"})
 	var sec = &observer{"second"}
 	loba.Add(sec)

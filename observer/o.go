@@ -6,21 +6,28 @@ type Observable interface {
 	Add(o Obserber)
 	Remove(o Obserber)
 	Notify()
+
+	Name() string
 }
 
 type Obserber interface {
-	Update()
+	Do(o Observable, args ...interface{}) error
 }
 
 type observer struct {
 	name string
 }
 
-func (o *observer) Update() {
-	log.Println(o.name, "recieved")
+func (o *observer) Do(ob Observable, args ...interface{}) error {
+	log.Printf("%s recieved from %s", o.name, ob.Name())
+	return nil
+}
+func (o *observer) Name() string {
+	return o.name
 }
 
 type observable struct {
+	name  string
 	obers []Obserber
 }
 
@@ -30,7 +37,7 @@ func (o *observable) Add(ob Obserber) {
 
 func (o *observable) Remove(ob Obserber) {
 	for i := range o.obers {
-		if o.obers[i] == ob {
+		if o.obers[i] == ob { // NOTE , == not a good idea
 			o.obers = append(o.obers[0:i], o.obers[i+1:]...)
 			return
 		}
@@ -39,6 +46,10 @@ func (o *observable) Remove(ob Obserber) {
 
 func (o *observable) Notify() {
 	for i := range o.obers {
-		o.obers[i].Update()
+		o.obers[i].Do(o, "test")
 	}
+}
+
+func (o *observable) Name() string {
+	return o.name
 }
